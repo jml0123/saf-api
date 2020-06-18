@@ -4,6 +4,12 @@ const MessagesService = {
             .select('*')
             .from('messages')
     },
+    getAllMessagesByCuratorId(knex, curator_id) {
+        return knex
+            .from('messages')
+            .where('curator_id', curator_id)
+            .select('*')
+    },
     insertMessage(knex, newMessage) {
         return knex
             .insert(newMessage)
@@ -26,7 +32,12 @@ const MessagesService = {
             .where({id})
             .delete()
     },
-    //MessagesService(knex, id, updatedMessage)
+    updateMessage(knex, id, updatedMessage){
+        return knex
+            .from('messages')
+            .where({id})
+            .update(updatedMessage)
+    },
 }
 
 module.exports = MessagesService
