@@ -100,7 +100,7 @@ messagesRouter
     .then(messages => {
         if (!messages.length) {
             return res.status(404).json({
-                error: { message: `User doesn't exist`}
+                error: { message: `User doesn't exist or no messages have been posted`}
             })
         }
         res.json(messages.map(serializeMessage))

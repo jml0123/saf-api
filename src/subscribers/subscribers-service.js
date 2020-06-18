@@ -4,7 +4,19 @@ const SubscribersService = {
             .select('*')
             .from('subscribers')
     },
-    //getAllSubscribers from a given user
+    getBySubscriberId(knex, id) {
+        return knex
+            .select('*')
+            .where('id', id)
+            .from('subscribers')
+            .first()
+    },
+    getAllSubscribersByCuratorId(knex, curator_id) {
+        return knex
+            .from('subscribers')
+            .where('curator_id', curator_id)
+            .count('*')
+    },
     insertSubscriber(knex, newSubscriber) {
         return knex
             .insert(newSubscriber)
@@ -19,7 +31,8 @@ const SubscribersService = {
             .from('subscribers')
             .where({id})
             .delete()
-    },
+    }
+    //get subscriber count
 }
 
 module.exports = SubscribersService
