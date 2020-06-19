@@ -7,3 +7,4 @@ module.exports = {
     FROM: '+12029463255',
     TO:'+19173449404',
 }
+// Add to env file and hide credentials
