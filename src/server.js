@@ -1,6 +1,10 @@
 const knex = require('knex');
 const app = require("./app")
 const {PORT, DATABASE_URL} = require('./config')
+const cron = require('node-cron');
+
+const monitorMessages = require('./MessageFactory');
+const moment = require('moment');
 
 const db = knex(({
     client: 'pg',
@@ -9,7 +13,13 @@ const db = knex(({
 
 app.set('db', db);
 
+// Runs MessageFactory cron job every minute
+cron.schedule("* * * * *", function() {
+    monitorMessages.run();
+});
+
 
 app.listen(PORT, () => {
     console.log(`Server listening at http://localhost:${PORT}`)
 })
+
