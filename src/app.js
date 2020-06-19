@@ -6,6 +6,8 @@ const helmet = require("helmet")
 const {NODE_ENV} = require("./config")
 const {CLIENT_ORIGIN} = require('./config');
 
+
+
 const curatorsRouter = require('./curators/curators-router')
 const messagesRouter = require('./messages/messages-router')
 const subscribersRouter = require('./subscribers/subscribers-router')
@@ -42,5 +44,7 @@ app.use(function errorHandler(error, req, res, next){
     }
     res.status(500).json(response)
 })
+
+
 
 module.exports = app

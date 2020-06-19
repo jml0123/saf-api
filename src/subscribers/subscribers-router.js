@@ -76,7 +76,7 @@ subscribersRouter
     .route('/curator/:curator_id')
     .get((req, res, next) => {
         const knexInstance = req.app.get('db')
-        SubscribersService.getAllSubscribersByCuratorId(knexInstance, req.params.curator_id)
+        SubscribersService.getSubscriberCountByCuratorId(knexInstance, req.params.curator_id)
         .then(subscriberCount => {
             if (!subscriberCount) {
                 return res.status(404).json({
