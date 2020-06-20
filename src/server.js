@@ -3,7 +3,7 @@ const app = require("./app")
 const {PORT, DATABASE_URL} = require('./config')
 const cron = require('node-cron');
 
-const monitorMessages = require('./MessageFactory');
+const monitorMessages = require('./factories/MessageFactory');
 const moment = require('moment');
 
 const db = knex(({

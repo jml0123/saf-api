@@ -1,12 +1,12 @@
 const knex = require('knex');
 const moment = require('moment');
 
-const MessagesService = require('./messages/messages-service.js');
-const SubscribersService = require('./subscribers/subscribers-service.js');
-const messageWorker = require('./workers/messageWorker.js');
+const MessagesService = require('../messages/messages-service.js');
+const SubscribersService = require('../subscribers/subscribers-service.js');
+const messageWorker = require('../workers/messageWorker.js');
 
 
-const {PORT, DATABASE_URL} = require('./config')
+const {PORT, DATABASE_URL} = require('../config')
 
 
 const db = knex(({
@@ -77,7 +77,7 @@ const messageFactory = function() {
             let queued = [];
             MessagesService.getAllMessages(db).then(async messages => {
                 queued = messages.filter(message => {
-                    let now = moment().format("LLL")
+                    let now = moment.utc().format("LLL")
                     return moment(message.scheduled).utc().format("LLL") == now
                 })
                 await createQueue(queued).then(result =>{

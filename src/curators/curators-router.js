@@ -2,6 +2,7 @@ const path = require('path')
 const express = require('express')
 const xss = require('xss')
 const CuratorsService = require('./curators-service')
+const {requireAuth} = require('../middleware/require-auth')
 
 const curatorsRouter = express.Router()
 const jsonParser = express.json()
@@ -9,6 +10,7 @@ const jsonParser = express.json()
 const serializeUser = user => ({
     id: user.id,
     username: xss(user.username),
+    password: user.password,
     phone_number: user.phone_number,
     full_name: xss(user.full_name),
     profile_img_link: user.profile_img_link,

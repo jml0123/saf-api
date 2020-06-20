@@ -11,6 +11,8 @@ const {NODE_ENV, CLIENT_ORIGIN} = require("./config")
 const curatorsRouter = require('./curators/curators-router')
 const messagesRouter = require('./messages/messages-router')
 const subscribersRouter = require('./subscribers/subscribers-router')
+const usersRouter = require('./users/users-router')
+const authRouter = require('./auth/auth-router')
 
 const app = express()
 
@@ -26,6 +28,8 @@ app.use(cors())
 app.use('/api/profiles', curatorsRouter)
 app.use('/api/messages', messagesRouter)
 app.use('/api/subscribers', subscribersRouter)
+app.use('/api/auth', authRouter)
+app.use('/api/users', usersRouter)
 
 // place functions here
  app.get('/', (req, res) => {

@@ -1,0 +1,4 @@
+TRUNCATE
+    curators
+RESTART IDENTITY CASCADE
+
