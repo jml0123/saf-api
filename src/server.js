@@ -15,6 +15,7 @@ app.set('db', db);
 
 // Runs MessageFactory cron job every minute
 cron.schedule("* * * * *", function() {
+    console.log("Cron job running... Parsing messages to send...")
     monitorMessages.run();
 });
 
