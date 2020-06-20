@@ -1,7 +1,6 @@
 require('dotenv').config();
 const twilio = require("twilio");
 
-console.log(process.env.TWILIO_ACC_SID)
 const client = new twilio(process.env.TWILIO_ACC_SID, process.env.TWILIO_TOKEN);
 
 const messageWorker = function() {
