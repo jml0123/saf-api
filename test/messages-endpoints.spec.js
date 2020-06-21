@@ -47,7 +47,7 @@ describe('Messages Endpoints', function() {
       )
 
       it('responds with 200 and all of the messages', () => {
-        const expectedMessaages = testMessages.map(messages =>
+        const expectedMessages = testMessages.map(messages =>
           helpers.makeExpectedMessage(
             testUsers,
             messages
@@ -56,7 +56,7 @@ describe('Messages Endpoints', function() {
         return supertest(app)
           .get('/api/messages')
           .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
-          .expect(200, expectedMessaages)
+          .expect(200, expectedMessages)
       })
     })
 

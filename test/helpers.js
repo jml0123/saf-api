@@ -11,7 +11,7 @@ function makeCuratorsArray() {
         full_name: 'Test user 1',
         profile_img_link: "https://pmcdeadline2.files.wordpress.com/2019/12/orlando-bloom.jpg?w=1000",
         profile_description: "Hi I'm orlando bloom",
-        date_created: new Date('2029-01-22T16:28:32.615Z'),
+        date_created: "2029-01-22T16:28:32.615Z"
     },
     {
         id: 2,
@@ -20,7 +20,7 @@ function makeCuratorsArray() {
         full_name: 'Test user 2',
         profile_img_link: "https://pmcdeadline2.files.wordpress.com/2019/12/orlando-bloom.jpg?w=1000",
         profile_description: "Hi I'm orlando bloom 2",
-        date_created: new Date('2029-01-22T16:28:32.615Z'),
+        date_created: "2029-01-22T16:28:32.615Z"
       },
     {
         id: 3,
@@ -29,16 +29,16 @@ function makeCuratorsArray() {
         full_name: 'Test user 3',
         profile_img_link: null,
         profile_description: null,
-        date_created: new Date('2029-01-22T16:28:32.615Z'),
+        date_created: "2029-01-22T16:28:32.615Z"
     },
     {
         id: 4,
         username: 'test-user-3',
-        password: ' bad pass',
+        password: 'password',
         full_name: 'Test user 3',
         profile_img_link: null,
         profile_description: null,
-        date_created: new Date('2029-01-22T16:28:32.615Z'),
+        date_created: "2029-01-22T16:28:32.615Z"
     },
   ]
 }
@@ -110,6 +110,18 @@ function makeExpectedMessage(users, message) {
   }
 }
 
+
+function makeExpectedSubscriber(users, subscriber) {
+    const curator = users
+    .find(user => user.id === subscriber.curator_id)
+
+  return {
+    curator_id: subscriber.curator_id,
+  }
+}
+
+  
+
 function makeMaliciousMessage(user) {
     const maliciousMessage = {
       id: 911,
@@ -134,6 +146,14 @@ function makeMessagesFixtures() {
   return { testUsers, testMessages }
 }
 
+
+function makeSubscribersFixtures() {
+    const testUsers = makeCuratorsArray()
+    const testSubscribers = makeSubscribersArray(testUsers)
+  
+    return { testUsers, testSubscribers }
+  }
+
 function cleanTables(db) {
   return db.transaction(trx =>
     trx.raw(
@@ -154,6 +174,12 @@ function seedUsers(db, users) {
   return db.into('curators').insert(preppedUsers)
 }
 
+
+function seedUsersSimple(db, users) {
+    return db.into('curators').insert(users)
+}
+  
+
 function seedMessages(db, users, messages) {
   // use a transaction to group the queries and auto rollback on any failure
   return db.transaction(async trx => {
@@ -161,6 +187,14 @@ function seedMessages(db, users, messages) {
     await trx.into('messages').insert(messages)
   })
 }
+
+function seedSubscribers(db, users, subscribers) {
+    // use a transaction to group the queries and auto rollback on any failure
+    return db.transaction(async trx => {
+      await seedUsers(trx, users)
+      await trx.into('subscribers').insert(subscribers)
+    })
+  }
 
 function seedMaliciousMessage(db, user, message) {
   return seedUsers(db, [user])
@@ -183,12 +217,16 @@ module.exports = {
   makeCuratorsArray,
   makeMessagesArray,
   makeExpectedMessage,
+  makeExpectedSubscriber,
   makeMaliciousMessage,
   makeSubscribersArray,
   makeMessagesFixtures,
+  makeSubscribersFixtures,
   cleanTables,
   seedMessages,
   seedMaliciousMessage,
+  seedSubscribers,
   makeAuthHeader,
   seedUsers,
+  seedUsersSimple
 }

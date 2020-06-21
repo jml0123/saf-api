@@ -37,7 +37,7 @@ const UsersService = {
             username: xss(curator.username),
             full_name: xss(curator.full_name),
             profile_img_link: xss(curator.profile_img_link),
-            profile_desciption: xss(curator.profile_desciption)
+            profile_description: xss(curator.profile_description)
         }
     }
   }

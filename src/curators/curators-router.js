@@ -10,7 +10,6 @@ const jsonParser = express.json()
 const serializeUser = user => ({
     id: user.id,
     username: xss(user.username),
-    password: user.password,
     phone_number: user.phone_number,
     full_name: xss(user.full_name),
     profile_img_link: user.profile_img_link,
@@ -28,29 +27,6 @@ curatorsRouter
         })
         .catch(next)
     })
-    .post(jsonParser, (req, res, next)=> {
-        const knexInstance = req.app.get('db')
-        const {username, password, full_name, profile_img_link, profile_description} = req.body;
-        const newUser = {username, password, full_name}
-        for (const [key, value] of Object.entries(newUser)) {
-            if (value == null)
-                return res.status(400).json({
-                    error: { message: `Missing '${key}' in request body` }
-        })}
-        
-        newUser.profile_img_link = profile_img_link
-        newUser.profile_description = profile_description
-
-        CuratorsService.insertCurator(knexInstance, newUser)
-        .then(curator => {
-            res
-                .status(201)
-                .location(path.posix.join(req.originalUrl, `/${curator.id}`))
-                .json(serializeUser(curator))
-        })
-        .catch(next)
-    })
-
 
 curatorsRouter
     .route('/:curator_id')
@@ -60,7 +36,7 @@ curatorsRouter
         .then(curator => {
             if (!curator) {
                 return res.status(404).json({
-                    error: { message: `User doesn't exist`}
+                    error: { message: `Profile doesn't exist`}
                 })
             }
             res.curator = curator
@@ -101,3 +77,34 @@ curatorsRouter
     })
 
     module.exports = curatorsRouter
+
+
+
+    /*
+        Uneeded
+
+        .post(jsonParser, (req, res, next)=> {
+        const knexInstance = req.app.get('db')
+        const {username, password, full_name, profile_img_link, profile_description} = req.body;
+        const newUser = {username, password, full_name}
+        for (const [key, value] of Object.entries(newUser)) {
+            if (value == null)
+                return res.status(400).json({
+                    error: { message: `Missing '${key}' in request body` }
+        })}
+        
+        newUser.profile_img_link = profile_img_link
+        newUser.profile_description = profile_description
+
+        CuratorsService.insertCurator(knexInstance, newUser)
+        .then(curator => {
+            res
+                .status(201)
+                .location(path.posix.join(req.originalUrl, `/${curator.id}`))
+                .json(serializeUser(curator))
+        })
+        .catch(next)
+    })
+
+
+    */
