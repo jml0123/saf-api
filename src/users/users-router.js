@@ -13,6 +13,7 @@ const userRouter = express.Router()
 userRouter
     .route('/')
     .get(requireAuth, (req, res, next) => {
+          console.log("curator ====>" + req.curator)
           res.json(req.curator)
         }
     )
