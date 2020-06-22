@@ -38,6 +38,13 @@ const SubscribersService = {
             .where('curator_id', curator_id)
             .select('*')
     },
+    deleteSubscriberByPhoneNumber(knex, phone_number) {
+        return knex
+            .from('subscribers')
+            .where('phone_number', phone_number)
+            .delete()
+            .count()
+    },
 }
 
 module.exports = SubscribersService

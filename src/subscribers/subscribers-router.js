@@ -45,6 +45,26 @@ subscribersRouter
     })
 
 subscribersRouter
+    .route('/unsubscribe')
+    .post(jsonParser, (req, res, next) => {
+        const knexInstance = req.app.get('db')
+        const {phone_number} = req.body
+        console.log(phone_number)
+        
+        if (phone_number === null) 
+            return res.status(400).json({
+                error: { message: `No phone number specified` }
+        })
+        SubscribersService.deleteSubscriberByPhoneNumber(knexInstance, phone_number)
+        .then(count => {
+            console.log(count)
+            res 
+                .status(200)
+                .json({deleteCount: count})
+        })
+    })
+
+subscribersRouter
     .route('/:subscriber_id')
     .all((req, res, next) => {
         knexInstance = req.app.get('db')
@@ -87,5 +107,8 @@ subscribersRouter
         })
         .catch(next)
     })
+
+
+
 
 module.exports = subscribersRouter

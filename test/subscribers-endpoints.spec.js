@@ -3,6 +3,8 @@ const app = require('../src/app')
 const helpers = require('./helpers')
 
 describe('Subscribers Endpoints', function() {
+    //need to add unsubscribe test
+
   let db
 
   const {testUsers, testSubscribers} = helpers.makeSubscribersFixtures()
