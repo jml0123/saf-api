@@ -1,5 +1,6 @@
 const path = require('path')
 const express = require('express')
+const xss = require('xss')
 
 const {requireAuth} = require('../middleware/require-auth')
 const AuthService = require('../auth/auth-service')
@@ -8,13 +9,21 @@ const UsersService = require('./users-service')
 const jsonParser = express.json()
 const userRouter = express.Router()
 
+const serializeUserLogin = user => ({
+    id: user.id,
+    username: xss(user.username),
+    full_name: xss(user.full_name),
+    profile_img_link: user.profile_img_link,
+    profile_description: user.profile_description,
+    date_created: user.date_created
+})
+
 
 
 userRouter
     .route('/')
     .get(requireAuth, (req, res, next) => {
-        
-          res.json(req.curator)
+          res.json(serializeUserLogin(req.curator))
         }
     )
     .post(jsonParser, (req, res, next) => {

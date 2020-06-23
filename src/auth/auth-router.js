@@ -32,7 +32,7 @@ authRouter
                     error: 'Incorrect username or password',
                     })
                 const sub = dbUser.username
-                const payload = { curator_id:dbUser.id }
+                const payload = { id: dbUser.id }
                 res.send({
                     authToken:AuthService.createJwt(sub, payload),
                 })

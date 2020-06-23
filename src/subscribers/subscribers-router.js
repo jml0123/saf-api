@@ -84,13 +84,7 @@ subscribersRouter
     .get((req, res, next) => {
         res.json(serializeSubscriber(res.subscriber))
     })
-    .delete((req, res, next) => {
-        SubscribersService.deleteSubscriber(knexInstance, req.params.subscriber_id)
-        .then(AffectedEntries=> {
-            res.status(204).end()
-        })
-        .catch(next)
-    })
+   
 
 subscribersRouter
     .route('/curator/:curator_id')
@@ -112,3 +106,15 @@ subscribersRouter
 
 
 module.exports = subscribersRouter
+
+/* 
+
+UNECESSARY ENDPOINT
+ .delete((req, res, next) => {
+        SubscribersService.deleteSubscriber(knexInstance, req.params.subscriber_id)
+        .then(AffectedEntries=> {
+            res.status(204).end()
+        })
+        .catch(next)
+    })
+*/

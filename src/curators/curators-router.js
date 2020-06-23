@@ -77,34 +77,3 @@ curatorsRouter
     })
 
     module.exports = curatorsRouter
-
-
-
-    /*
-        Uneeded
-
-        .post(jsonParser, (req, res, next)=> {
-        const knexInstance = req.app.get('db')
-        const {username, password, full_name, profile_img_link, profile_description} = req.body;
-        const newUser = {username, password, full_name}
-        for (const [key, value] of Object.entries(newUser)) {
-            if (value == null)
-                return res.status(400).json({
-                    error: { message: `Missing '${key}' in request body` }
-        })}
-        
-        newUser.profile_img_link = profile_img_link
-        newUser.profile_description = profile_description
-
-        CuratorsService.insertCurator(knexInstance, newUser)
-        .then(curator => {
-            res
-                .status(201)
-                .location(path.posix.join(req.originalUrl, `/${curator.id}`))
-                .json(serializeUser(curator))
-        })
-        .catch(next)
-    })
-
-
-    */

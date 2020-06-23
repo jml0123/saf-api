@@ -79,18 +79,22 @@ function makeMessagesArray(users) {
 function makeSubscribersArray(users) {
   return [
     {
-        phone_number: '1112223333',
+        id: 1,
+        phone_number: '1234567889',
         curator_id: 1
     },
     {
+        id: 2,
         phone_number: '1112223333',
         curator_id: 2
     },
     {
-        phone_number: '1112223333',
-        curator_id: 3
+        id: 3,
+        phone_number: '2231239495',
+        curator_id: 1
     },
     {
+        id: 4,
         phone_number: '1112223333',
         curator_id: 4
     },
