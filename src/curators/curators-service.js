@@ -31,6 +31,10 @@ const CuratorsService = {
             .from('curators')
             .where({id})
             .update(updatedUser)
+            .returning('*')
+            .then(rows => {
+                return rows[0]
+            })
     },
     //updateCurator(knex, id, updatedUser)
 }

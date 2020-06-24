@@ -50,10 +50,7 @@ describe('Users Endpoints', function() {
          })
     })   
   })
-  
-  
   describe(`POST /api/users`, () => {
-    // Still need to add test for xss attack content
     context(`Validation`, () => {
      beforeEach(() =>
         helpers.seedUsers(db, testUsers)
@@ -127,7 +124,6 @@ describe('Users Endpoints', function() {
           .expect(400, { error: `Username already exists` })
       })
     })
-    
     context(`Successful Registration - Happy Path`, () => {
         it(`responds 201, serialized user with all fields filled out, storing bcryped password`, () => {
           const newUser = {

@@ -78,7 +78,6 @@ describe('Subscribers Endpoints', function() {
             })
         })
     })
-
     describe(`GET /api/subscribers/:subscriber_id`, () => {
         context('When a subscriber exists in the db', () => {
             beforeEach('insert subscribers',() => 
@@ -91,7 +90,23 @@ describe('Subscribers Endpoints', function() {
             })
         })
     })
-
+    describe(`DELETE /api/subscribers/:subscriber_id`, () => {
+        context('When a subscriber exists in the db', () => {
+            beforeEach('insert subscribers',() => 
+                helpers.seedSubscribers(db, testUsers, testSubscribers)
+            )
+            it(`succesfully deletes the subscriber entry at the given id (phone numbers paired with other curators persist)`, () => {
+                return supertest(app)
+                    .delete(`/api/subscribers/${testSubscriber.id}`)
+                    .expect(204)
+                    .then(res =>{
+                        return supertest(app)
+                        .get(`/api/subscribers/${testSubscriber.id}`)
+                        .expect(404)
+                    })
+            })
+        })
+    })
     describe(`GET /api/subscribers/curator/:curator_id`, () => {
         context('When a given curator has subscribers', () => {
             beforeEach('insert subscribers',() => 
@@ -118,10 +133,18 @@ describe('Subscribers Endpoints', function() {
                 const deleteSubscriber = {
                     phone_number: testSubscriber.phone_number,
                 }
+
+                const expectedCount= testSubscribers.filter(subscriber => subscriber.phone_number === testSubscriber.phone_number).length
+
                 return supertest(app)
                     .post('/api/subscribers/unsubscribe')
                     .send(deleteSubscriber)
-                    .expect(200, {deleteCount: 1}) // TestSubscriber is only subscribed to 1 curator
+                    .expect(200, {deleteCount: expectedCount})
+                    .then(res => {
+                        return supertest(app)
+                            .get(`/api/subscribers/${testSubscriber.id}`)
+                            .expect(404)
+                    }) 
             })
         })
     })

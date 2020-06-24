@@ -47,14 +47,14 @@ curatorsRouter
     .get((req, res, next) => {
         res.json(serializeUser(res.curator))
     })
-    .delete((req, res, next) => {
+    .delete(requireAuth, (req, res, next) => {
         CuratorsService.deleteCurator(knexInstance, req.params.curator_id)
         .then(AffectedEntries=> {
             res.status(204).end()
         })
         .catch(next)
     })
-    .patch(jsonParser, (req, res, next) => {
+    .patch(requireAuth, jsonParser, (req, res, next) => {
         const knexInstance = req.app.get('db');
         const {username, password, full_name, profile_img_link, profile_description} = req.body;
         const updatedUser = {username, password}
@@ -70,8 +70,9 @@ curatorsRouter
         updatedUser.profile_description = profile_description
 
         CuratorsService.updateUser(knexInstance, req.params.curator_id, updatedUser)
-        .then(numRowsAffected => {
-            res.status(204).end();
+        .then(user => {
+            res.status(200)
+            res.json(serializeUser(user));
         })
         .catch(next)
     })

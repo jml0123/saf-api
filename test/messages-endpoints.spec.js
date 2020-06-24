@@ -7,21 +7,19 @@ describe('Messages Endpoints', function() {
   let db
 
   const serializeMessage = msg => ({
-    //id: msg.id,
+    id: msg.id,
     content: xss(msg.content),
     curator_id: msg.curator_id,
     scheduled: msg.scheduled,
     //date_modified: msg.date_modified
 })
-
-    
   const {
     testUsers,
     testMessages,
   } = helpers.makeMessagesFixtures()
 
   const testUser = testUsers[0]
-
+  const testMessage = testMessages[0]
 
   before('make knex instance', () => {
     db = knex({
@@ -96,14 +94,13 @@ describe('Messages Endpoints', function() {
       })
     })
   })
-
-
   describe(`POST /messages`, () => {
     context(`Given a specific curator`, () => {
         beforeEach(() =>
             helpers.seedUsers(db, testUsers)
         )
         const goodMessage = {
+            id: 1,
             content: "Lorem ipsum",
             scheduled: "2029-01-22T16:28:32.615Z",
             curator_id: testUser.id
@@ -118,33 +115,16 @@ describe('Messages Endpoints', function() {
           })
     })
   })
-
-  describe(`GET /messages/curator/:curator_id`, () => {
-    context(`Given a specific curator`, () => {
-        beforeEach(() =>
-            helpers.seedMessages(db, testUsers, testMessages)
-        )
-        const expectedMessages = testMessages.filter(message => message.curator_id === testUser.id)
-
-        it('Successfully retrieves messages associated with the given curator', () => {
-            return supertest(app)
-              .get(`/api/messages/curator/${testUser.id}`)
-              .set('Authorization', helpers.makeAuthHeader(testUser))
-              .expect(200, expectedMessages.map(message => serializeMessage(message)))
-          })
-    })
-  })
-
-
+  
   describe(`GET /api/messages/:message_id`, () => {
     context(`Given no messages`, () => {
       beforeEach(() =>
         helpers.seedMessages(db, testUsers, testMessages)
       )
       it(`responds with 404`, () => {
-        const messageId = 213129312
+        const nonExistentMessageId = 213129312
         return supertest(app)
-          .get(`/api/messages/${messageId}`)
+          .get(`/api/messages/${nonExistentMessageId}`)
           .set('Authorization', helpers.makeAuthHeader(testUser))
           .expect(404, {error: {
               message: `Message doesn't exist`
@@ -172,7 +152,6 @@ describe('Messages Endpoints', function() {
           .expect(200, serializeMessage(expectedMessage))
       })
     })
-
     context(`Given an XSS attack message`, () => {
       const testUser = helpers.makeCuratorsArray()[1]
       const {
@@ -195,6 +174,60 @@ describe('Messages Endpoints', function() {
             expect(res.body.content).to.eql(expectedMessage.content)
           })
       })
+    })
+  })
+  describe(`PATCH /messages/:message_id`, () => {
+    context(`Given a message exists`, () => {
+        beforeEach(() =>
+            helpers.seedMessages(db, testUsers, testMessages)
+        )
+        const newData = {
+            id: testMessage.id,
+            content: "Updated Lorem Ipsum",
+            scheduled: testMessage.scheduled,
+            curator_id: testUser.id
+        }
+        it('Successfully edits message associated with the given curator', () => {
+            return supertest(app)
+              .patch(`/api/messages/${testMessage.id}`)
+              .send(newData)
+              .set('Authorization', helpers.makeAuthHeader(testUser))
+              .expect(200, serializeMessage(newData))
+          })
+    })
+  })
+  describe(`DELETE /messages/:message_id`, () => {
+    context(`Given a message exists`, () => {
+        beforeEach(() =>
+            helpers.seedMessages(db, testUsers, testMessages)
+        )
+         it('Successfully deletes message associated with the given curator', () => {
+            return supertest(app)
+              .delete(`/api/messages/${testMessage.id}`)
+              .set('Authorization', helpers.makeAuthHeader(testUser))
+              .expect(204) // Deleted
+              .then(res=> {
+                return supertest(app)
+                .get(`/api/messages/${testMessage.id}`)
+                .set('Authorization', helpers.makeAuthHeader(testUser))
+                .expect(404) 
+              })
+          })
+    })
+  })
+  describe(`GET /messages/curator/:curator_id`, () => {
+    context(`Given a specific curator`, () => {
+        beforeEach(() =>
+            helpers.seedMessages(db, testUsers, testMessages)
+        )
+        const expectedMessages = testMessages.filter(message => message.curator_id === testUser.id)
+
+        it('Successfully retrieves messages associated with the given curator', () => {
+            return supertest(app)
+              .get(`/api/messages/curator/${testUser.id}`)
+              .set('Authorization', helpers.makeAuthHeader(testUser))
+              .expect(200, expectedMessages.map(message => serializeMessage(message)))
+          })
     })
   })
 })

@@ -37,6 +37,10 @@ const MessagesService = {
             .from('messages')
             .where({id})
             .update(updatedMessage)
+            .returning('*')
+            .then(rows => {
+                return rows[0]
+            })
     },
 }
 
