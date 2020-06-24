@@ -2,6 +2,16 @@ const knex = require('knex')
 const app = require('../src/app')
 const helpers = require('./helpers')
 const bcrypt = require('bcryptjs')
+const xss = require('xss')
+
+const serializeUserLogin = user => ({
+    id: user.id,
+    username: xss(user.username),
+    full_name: xss(user.full_name),
+    profile_img_link: user.profile_img_link,
+    profile_description: user.profile_description,
+    date_created: user.date_created
+})
 
 
 describe('Users Endpoints', function() {
@@ -27,10 +37,20 @@ describe('Users Endpoints', function() {
 
   afterEach('cleanup', () => helpers.cleanTables(db))
 
+  describe(`GET /api/users`, () => {
+    context(`Get user using header token`, () => {
+        beforeEach(() =>
+           helpers.seedUsers(db, testUsers)
+         )
+           it(`responds with 200 when a successful request is made`, () => {
+                return supertest(app)
+                .get('/api/users')
+                .set('Authorization', helpers.makeAuthHeader(testUser))
+                .expect(200, serializeUserLogin(testUser))
+         })
+    })   
+  })
   describe(`POST /api/users`, () => {
-
-    // Still need to add test for xss attack content
-
     context(`Validation`, () => {
      beforeEach(() =>
         helpers.seedUsers(db, testUsers)
@@ -104,7 +124,6 @@ describe('Users Endpoints', function() {
           .expect(400, { error: `Username already exists` })
       })
     })
-    
     context(`Successful Registration - Happy Path`, () => {
         it(`responds 201, serialized user with all fields filled out, storing bcryped password`, () => {
           const newUser = {

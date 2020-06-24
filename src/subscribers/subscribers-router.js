@@ -80,7 +80,6 @@ subscribersRouter
         })
         .catch(next)
     })
-    // REMOVE THIS ENDPOINT AFTER TESTING!
     .get((req, res, next) => {
         res.json(serializeSubscriber(res.subscriber))
     })
@@ -91,6 +90,7 @@ subscribersRouter
         })
         .catch(next)
     })
+   
 
 subscribersRouter
     .route('/curator/:curator_id')
@@ -112,3 +112,9 @@ subscribersRouter
 
 
 module.exports = subscribersRouter
+
+/* 
+
+UNECESSARY ENDPOINT
+
+*/

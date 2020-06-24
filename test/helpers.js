@@ -79,18 +79,22 @@ function makeMessagesArray(users) {
 function makeSubscribersArray(users) {
   return [
     {
-        phone_number: '1112223333',
+        id: 1,
+        phone_number: '1234567889',
         curator_id: 1
     },
     {
+        id: 2,
         phone_number: '1112223333',
         curator_id: 2
     },
     {
-        phone_number: '1112223333',
-        curator_id: 3
+        id: 3,
+        phone_number: '2231239495',
+        curator_id: 1
     },
     {
+        id: 4,
         phone_number: '1112223333',
         curator_id: 4
     },
@@ -161,7 +165,16 @@ function cleanTables(db) {
         curators,
         messages,
         subscribers
-      `
+      `)
+      .then(() =>
+      Promise.all([
+        trx.raw(`ALTER SEQUENCE curators_id_seq minvalue 0 START WITH 1`),
+        trx.raw(`ALTER SEQUENCE messages_id_seq minvalue 0 START WITH 1`),
+        trx.raw(`ALTER SEQUENCE subscribers_id_seq minvalue 0 START WITH 1`),
+        trx.raw(`SELECT setval('curators_id_seq', 0)`),
+        trx.raw(`SELECT setval('messages_id_seq', 0)`),
+        trx.raw(`SELECT setval('subscribers_id_seq', 0)`),
+      ])
     )
   )
 }

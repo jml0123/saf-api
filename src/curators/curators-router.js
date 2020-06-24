@@ -47,14 +47,14 @@ curatorsRouter
     .get((req, res, next) => {
         res.json(serializeUser(res.curator))
     })
-    .delete((req, res, next) => {
+    .delete(requireAuth, (req, res, next) => {
         CuratorsService.deleteCurator(knexInstance, req.params.curator_id)
         .then(AffectedEntries=> {
             res.status(204).end()
         })
         .catch(next)
     })
-    .patch(jsonParser, (req, res, next) => {
+    .patch(requireAuth, jsonParser, (req, res, next) => {
         const knexInstance = req.app.get('db');
         const {username, password, full_name, profile_img_link, profile_description} = req.body;
         const updatedUser = {username, password}
@@ -70,41 +70,11 @@ curatorsRouter
         updatedUser.profile_description = profile_description
 
         CuratorsService.updateUser(knexInstance, req.params.curator_id, updatedUser)
-        .then(numRowsAffected => {
-            res.status(204).end();
+        .then(user => {
+            res.status(200)
+            res.json(serializeUser(user));
         })
         .catch(next)
     })
 
     module.exports = curatorsRouter
-
-
-
-    /*
-        Uneeded
-
-        .post(jsonParser, (req, res, next)=> {
-        const knexInstance = req.app.get('db')
-        const {username, password, full_name, profile_img_link, profile_description} = req.body;
-        const newUser = {username, password, full_name}
-        for (const [key, value] of Object.entries(newUser)) {
-            if (value == null)
-                return res.status(400).json({
-                    error: { message: `Missing '${key}' in request body` }
-        })}
-        
-        newUser.profile_img_link = profile_img_link
-        newUser.profile_description = profile_description
-
-        CuratorsService.insertCurator(knexInstance, newUser)
-        .then(curator => {
-            res
-                .status(201)
-                .location(path.posix.join(req.originalUrl, `/${curator.id}`))
-                .json(serializeUser(curator))
-        })
-        .catch(next)
-    })
-
-
-    */

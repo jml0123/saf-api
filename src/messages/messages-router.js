@@ -12,7 +12,7 @@ const serializeMessage = msg => ({
     content: xss(msg.content),
     curator_id: msg.curator_id,
     scheduled: msg.scheduled,
-    date_modified: msg.date_modified
+    //date_modified: msg.date_modified
 })
 
 messagesRouter
@@ -26,7 +26,7 @@ messagesRouter
         })
         .catch(next)
     })
-    .post(requireAuth, jsonParser, (req, res, next)=> {
+    .post(jsonParser, (req, res, next)=> {
         const knexInstance = req.app.get('db')
         const {content, scheduled, curator_id} = req.body;
         const newMessage = {content, scheduled}
@@ -77,7 +77,7 @@ messagesRouter
         })
         .catch(next)
     })
-    .patch(requireAuth, jsonParser, (req, res, next) => {
+    .patch(jsonParser, (req, res, next) => {
         const knexInstance = req.app.get('db');
         const {content, scheduled} = req.body;
         const updatedMessage = {content, scheduled}
@@ -90,8 +90,9 @@ messagesRouter
         updatedMessage.scheduled = scheduled
 
         MessagesService.updateMessage(knexInstance, req.params.message_id, updatedMessage)
-        .then(numRowsAffected => {
-            res.status(204).end();
+        .then(message => {
+            res.status(200)
+            res.json(serializeMessage(message));
         })
         .catch(next)
     })

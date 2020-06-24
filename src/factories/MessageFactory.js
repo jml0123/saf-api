@@ -90,33 +90,3 @@ const messageFactory = function() {
 }
 module.exports = messageFactory();
 
-/*
-
-
-module.exports = schedulerFactory();
-
-
-
-client.messages
-    .create({
-      body: "",
-      to: TO,
-      from: FROM
-    })
-.then(message => console.log(message.sid));
-
-*/
-// GET ALL MESSAGES 
-// GET ALL SUBSCRIBERS
-
-// Parse scheduled texts (CRON JOB)
-
-// Filter texts by curator id
-// Filter users by curator id
-
-// Send scheduled texts to respective numbers associated with specifc curator id
-
-
-
-
-

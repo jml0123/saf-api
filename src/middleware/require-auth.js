@@ -19,7 +19,6 @@ function requireAuth(req, res, next) {
       .then(curator => {
         if (!curator)
           return res.status(401).json({ error: 'Unauthorized request' })
-
         req.curator = curator
         next()
       })
