@@ -57,17 +57,7 @@ curatorsRouter
     .patch(requireAuth, jsonParser, (req, res, next) => {
         const knexInstance = req.app.get('db');
         const {username, password, full_name, profile_img_link, profile_description} = req.body;
-        const updatedUser = {username, password}
-
-        for (const [key, value] of Object.entries(updatedUser)) {
-            if (value == null)
-                return res.status(400).json({
-                    error: { message: `Missing '${key}' in request body` }
-        })}
-
-        updatedUser.full_name = full_name
-        updatedUser.profile_img_link = profile_img_link
-        updatedUser.profile_description = profile_description
+        const updatedUser = {full_name, profile_img_link, profile_description}
 
         CuratorsService.updateUser(knexInstance, req.params.curator_id, updatedUser)
         .then(user => {

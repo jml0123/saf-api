@@ -7,7 +7,7 @@ const subscribersRouter = express.Router()
 const jsonParser = express.json()
 
 const serializeSubscriber = subscriber => ({
-    //id: subscriber.id,
+    id: subscriber.id,
     // REMOVE THIS AFTER TESTING!
     //phone_number: subscriber.phone_number,
     curator_id: subscriber.curator_id
