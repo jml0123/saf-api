@@ -120,6 +120,7 @@ function makeExpectedSubscriber(users, subscriber) {
     .find(user => user.id === subscriber.curator_id)
 
   return {
+    id: subscriber.id,
     curator_id: subscriber.curator_id,
   }
 }

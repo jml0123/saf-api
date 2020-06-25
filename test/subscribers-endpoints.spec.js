@@ -5,6 +5,7 @@ const helpers = require('./helpers')
 describe('Subscribers Endpoints', function() {
     
     const serializeSubscriber = subscriber => ({
+        id: subscriber.id,
         curator_id: subscriber.curator_id
     })
 
@@ -44,14 +45,14 @@ describe('Subscribers Endpoints', function() {
                 db,
                 testUsers,
                 testSubscribers
-            )
+                )
             )
 
             it('responds with 200 and all of the subscribers', () => {
             const expectedSubscribers = testSubscribers.map(expectedSub =>
                 helpers.makeExpectedSubscriber(
-                testUsers,
-                expectedSub
+                    testUsers,
+                    expectedSub
                 )
             )
             return supertest(app)
@@ -68,6 +69,7 @@ describe('Subscribers Endpoints', function() {
             )
             it(`responds 201, and the resulting curator_id subscribed to`, () => {
                 const goodSubscriber = {
+                    id: testSubscriber.id,
                     phone_number: '1111111111',
                     curator_id: 2,
                 }
