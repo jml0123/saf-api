@@ -1,78 +1,76 @@
-const path = require('path')
-const express = require('express')
-const xss = require('xss')
+const path = require("path");
+const express = require("express");
+const xss = require("xss");
 
-const {requireAuth} = require('../middleware/require-auth')
-const AuthService = require('../auth/auth-service')
-const UsersService = require('./users-service')
+const { requireAuth } = require("../middleware/require-auth");
+const AuthService = require("../auth/auth-service");
+const UsersService = require("./users-service");
 
-const jsonParser = express.json()
-const userRouter = express.Router()
+const jsonParser = express.json();
+const userRouter = express.Router();
 
-const serializeUserLogin = user => ({
-    id: user.id,
-    username: xss(user.username),
-    full_name: xss(user.full_name),
-    profile_img_link: user.profile_img_link,
-    profile_description: user.profile_description,
-    date_created: user.date_created
-})
-
-
+const serializeUserLogin = (user) => ({
+  id: user.id,
+  username: xss(user.username),
+  full_name: xss(user.full_name),
+  profile_img_link: user.profile_img_link,
+  profile_description: user.profile_description,
+  date_created: user.date_created,
+});
 
 userRouter
-    .route('/')
-    .get(requireAuth, (req, res, next) => {
-          res.json(serializeUserLogin(req.curator))
-        }
-    )
-    .post(jsonParser, (req, res, next) => {
-        const {username, password, full_name, profile_img_link, profile_description} = req.body
-        const requiredFields = ['username', 'password', 'full_name']
-        
-        const profileImg = (!profile_img_link) ? null : profile_img_link
-        const profileDescription = (!profile_description) ? null : profile_description
+  .route("/")
+  .get(requireAuth, (req, res, next) => {
+    res.json(serializeUserLogin(req.curator));
+  })
+  .post(jsonParser, (req, res, next) => {
+    const {
+      username,
+      password,
+      full_name,
+      profile_img_link,
+      profile_description,
+    } = req.body;
+    const requiredFields = ["username", "password", "full_name"];
 
-        for (const field of requiredFields) 
-            if(!req.body[field])
-                return res.status(400).json({
-                    error: `Missing '${field}' in request body`
-                })
+    const profileImg = !profile_img_link ? null : profile_img_link;
+    const profileDescription = !profile_description
+      ? null
+      : profile_description;
 
-        const passwordError = UsersService.validatePassword(password)
+    for (const field of requiredFields)
+      if (!req.body[field])
+        return res.status(400).json({
+          error: `Missing '${field}' in request body`,
+        });
 
-        if(passwordError)
-            return res.status(400).json({ error: passwordError})
-        
-        
-        UsersService.hasUserWithUserName(
-            req.app.get('db'),
-            username
-        ).then(hasUserWithUserName => {
-            if (hasUserWithUserName)
-                return res.status(400).json({ error: 'Username already exists'})
-            
-            return UsersService.hashPassword(password)
-                .then(hashedPassword => {
-                    const newUser = {
-                        username,
-                        password: hashedPassword,
-                        full_name,
-                        profile_description: profileDescription,
-                        profile_img_link: profileImg
-                    } 
-                    return UsersService.insertUser(
-                        req.app.get('db'),
-                        newUser
-                    )
-                    .then(curator => {
-                        res
-                        .status(201)
-                        .location(path.posix.join(req.originalUrl, `/${curator.id}`))
-                        .json(UsersService.serializeUser(curator))
-                    })
-                })
-            })
-            .catch(next)
-    })
-module.exports = userRouter
+    const passwordError = UsersService.validatePassword(password);
+
+    if (passwordError) return res.status(400).json({ error: passwordError });
+
+    UsersService.hasUserWithUserName(req.app.get("db"), username)
+      .then((hasUserWithUserName) => {
+        if (hasUserWithUserName)
+          return res.status(400).json({ error: "Username already exists" });
+
+        return UsersService.hashPassword(password).then((hashedPassword) => {
+          const newUser = {
+            username,
+            password: hashedPassword,
+            full_name,
+            profile_description: profileDescription,
+            profile_img_link: profileImg,
+          };
+          return UsersService.insertUser(req.app.get("db"), newUser).then(
+            (curator) => {
+              res
+                .status(201)
+                .location(path.posix.join(req.originalUrl, `/${curator.id}`))
+                .json(UsersService.serializeUser(curator));
+            }
+          );
+        });
+      })
+      .catch(next);
+  });
+module.exports = userRouter;

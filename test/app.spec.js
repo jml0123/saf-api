@@ -1,9 +1,7 @@
-const app = require('../src/app')
+const app = require("../src/app");
 
-describe('App', () => {
+describe("App", () => {
   it('GET / responds with 404 containing "Not found"', () => {
-    return supertest(app)
-      .get('/api/')
-      .expect(404)
-  })
-})
+    return supertest(app).get("/api/").expect(404);
+  });
+});

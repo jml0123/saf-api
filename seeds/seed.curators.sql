@@ -13,7 +13,6 @@ VALUES
 'https://thumbs.dreamstime.com/b/punk-girl-avatar-violet-hair-flat-74541226.jpg',
 'Hi my name is jane'),
 
-
 ('rodney@email.com', 
 '$2a$12$UzZ0vEPRLRhzy3fEk6B2XO2Y37J8GuA6mfnJ.Lnmm/ZY/DLXXkhmK', 
 'Rodney Wyatt', 
