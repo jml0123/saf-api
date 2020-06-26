@@ -1,26 +1,74 @@
-# Express Boilerplate
+## Start a 🔥App (API)
+This is the API repository for Start a 🔥. To see the client repository, visit *[here](https://github.com/jml0123/saf-textapp-client)*.
 
-This is a boilerplate Express project.
 
-## Set up
+[Link to Live Site](https://saf-textapp-client.jml0123.vercel.app/)
 
-Remember the steps below to initialize a new project using this boilerplate:
+## Technology Used
+- PostgreSQL
+- Express.js
+- Node.js (node-cron to schedule SMS message sending)
+- React.js
+- (Twillio API)
 
-1. Clone this repository to a new local project using `git clone {BOILERPLATE-URL} {NEW-PROJECTS-NAME}`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use `{NEW-PROJECTS-NAME}` instead of `"name": "express-boilerplate",`
 
-## Scripts
+## API Docs
 
-Start the application `npm start`
+### Curator Profiles Endpoints  `/api/profiles`
+`GET /`
+- Gets all curator profiles
+  
+`GET /:curator_id`
+- Gets a curator profile by their id
 
-Start nodemon for the application `npm run dev`
+`DELETE /:curator_id`
+- Deletes a curator profile
 
-Run the tests `npm test`
+`PATCH /:curator_id`
+- Edits the information of a specific curator, given their id
+  
+### Messages Endpoints `/api/messages`
 
-## Deploying
+`GET /`
+- Gets all messages
+  
+`POST /`
+- Posts a new message. Content, associated curator_id, and send schedule is required.
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+`GET /:message_id`
+- Gets a specific messsage given its id
+
+`DELETE /:message_id` 
+- Deletes a specific message given its id
+
+`PATCH /:message_id` 
+- Edits a specific message given its id
+
+`GET /curator/:curator_id` 
+- Gets all messages of a given curator
+  
+### Subscribers Endpoints `/api/subscribers`
+
+`GET /`
+- Gets all subscribers
+  
+`POST /`
+- Posts a new subscriber. Requires phone number and associated curator to subscribe to.
+
+`POST /unsubscribe` 
+- Unsubscribe a phone number from all curators. Responds with the number of unsubscribed curators. Requires phone number.
+  
+`GET /:subscriber_id`
+- Gets a specific subscriber given their id
+
+`DELETE /:subscriber_id`
+- Unsubscribes from a specific subscription associated with a curator
+
+`GET /curator/:curator_id`
+- Gets the subscriber count of a given curator
+  
+### Sign-up Endpoints `/api/users`
+`POST /`
+- Creates a new curator account. (Requires username, password and full_name of curator)
+  
+
