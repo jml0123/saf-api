@@ -32,6 +32,7 @@ subscribersRouter
         });
     }
     // Check to see if user has already subscribed to this phone number
+    // If they haven't then insert new subscriber
     SubscribersService.checkExisting(knexInstance, newSubscriber).then(sub => {
       console.log(sub)
       if (!sub) {
@@ -43,11 +44,11 @@ subscribersRouter
             .json(serializeSubscriber(subscriber));
         })
       }
-      // If they haven't then insert new subscriber
+      // Otherwise send am error message
       else {
-        res
-          .status(201)
-          .send("Number is already subscribed to this curator");
+        return res.status(405).json({
+          error: { message: `Number is already subscribed to this curator` },
+        });
       }
     })
       .catch(next);
