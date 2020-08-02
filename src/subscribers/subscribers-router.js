@@ -31,14 +31,25 @@ subscribersRouter
           error: { message: `Missing '${key}' in request body` },
         });
     }
-
-    SubscribersService.insertSubscriber(knexInstance, newSubscriber)
-      .then((subscriber) => {
+    // Check to see if user has already subscribed to this phone number
+    SubscribersService.checkExisting(knexInstance, newSubscriber).then(sub => {
+      console.log(sub)
+      if (!sub) {
+        SubscribersService.insertSubscriber(knexInstance, newSubscriber)
+        .then((subscriber) => {
+          res
+            .status(201)
+            .location(path.posix.join(req.originalUrl, `/${subscriber.id}`))
+            .json(serializeSubscriber(subscriber));
+        })
+      }
+      // If they haven't then insert new subscriber
+      else {
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl, `/${subscriber.id}`))
-          .json(serializeSubscriber(subscriber));
-      })
+          .send("Number is already subscribed to this curator");
+      }
+    })
       .catch(next);
   });
 

@@ -8,6 +8,13 @@ const SubscribersService = {
   getSubscriberCountByCuratorId(knex, curator_id) {
     return knex.from("subscribers").where("curator_id", curator_id).count("*");
   },
+  checkExisting(knex, newSubscriber) {
+    return knex.select("*")
+      .from("subscribers")
+      .where("curator_id", newSubscriber.curator_id)
+      .andWhere("phone_number", newSubscriber.phone_number)
+      .first()
+  },
   insertSubscriber(knex, newSubscriber) {
     return knex
       .insert(newSubscriber)
