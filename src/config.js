@@ -6,4 +6,3 @@ module.exports = {
   JWT_SECRET: process.env.JWT_SECRET || "change-this-secret",
   CLIENT_ORIGIN: "http://localhost:3000",
 };
-// Add to env file and hide credentials

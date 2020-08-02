@@ -23,6 +23,13 @@ const SubscribersService = {
   getAllSubscribersByCuratorId(knex, curator_id) {
     return knex.from("subscribers").where("curator_id", curator_id).select("*");
   },
+  deleteAllSubscribersByCuratorId(knex, curator_id) {
+    return knex
+      .from("subscribers")
+      .where("curator_id", curator_id)
+      .delete()
+      .count();
+  },
   deleteSubscriberByPhoneNumber(knex, phone_number) {
     return knex
       .from("subscribers")
